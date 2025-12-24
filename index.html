@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель загрузки карточек | Гос. каталог</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-bg: #0a0a0f;
+            --secondary-bg: #12121a;
+            --accent-color: #8a2be2;
+            --accent-light: #a855f7;
+            --text-color: #f0f0f0;
+            --border-color: #2a2a3a;
+            --card-bg: #1a1a24;
+            --success-color: #00cc88;
+            --warning-color: #ffaa00;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .form-container {
+            flex: 1;
+            min-width: 350px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .preview-container {
+            flex: 1;
+            min-width: 350px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            overflow-y: auto;
+            max-height: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--accent-light);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.3);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn-new {
+            background-color: transparent;
+            color: var(--accent-light);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(138, 43, 226, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .card-preview {
+            background-color: var(--secondary-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--accent-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .card-preview:hover {
+            transform: translateX(5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--accent-light);
+        }
+
+        .card-id {
+            font-size: 0.9rem;
+            color: #aaa;
+            background-color: rgba(138, 43, 226, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .card-field {
+            margin-bottom: 10px;
+        }
+
+        .field-label {
+            font-weight: 600;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .field-value {
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .empty-preview {
+            text-align: center;
+            padding: 40px 20px;
+            color: #777;
+        }
+
+        .empty-preview i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--border-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--accent-color);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: var(--accent-light);
+        }
+
+        .modal-input {
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--secondary-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .date-format-hint {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 5px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .form-container, .preview-container {
+                min-width: 100%;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-archive"></i> Панель загрузки карточек</h1>
+            <p class="subtitle">Государственный каталог музейных предметов</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="total-cards">0</div>
+                <div class="stat-label">Всего карточек</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="today-cards">0</div>
+                <div class="stat-label">Добавлено сегодня</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="last-id">-</div>
+                <div class="stat-label">Последний номер по КП</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="form-container">
+                <h2><i class="fas fa-plus-circle"></i> Новая карточка</h2>
+                <form id="card-form">
+                    <div class="form-group">
+                        <label for="name"><i class="fas fa-heading"></i> Название</label>
+                        <input type="text" id="name" placeholder="Введите название предмета" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description"><i class="fas fa-align-left"></i> Описание</label>
+                        <textarea id="description" placeholder="Подробное описание предмета" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="kNumber"><i class="fas fa-hashtag"></i> Номер по КП (ГИК)</label>
+                        <input type="text" id="kNumber" placeholder="Например: КП-12345" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date"><i class="fas fa-calendar-alt"></i> Дата записи в КП (ГИК)</label>
+                        <input type="text" id="date" placeholder="ДД.ММ.ГГГГ" required>
+                        <span class="date-format-hint">Формат: ДД.ММ.ГГГГ (например: 15.10.2023)</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dimensions"><i class="fas fa-ruler-combined"></i> Размеры</label>
+                        <input type="text" id="dimensions" placeholder="Например: 120x80x60 см" required>
+                    </div>
+                    
+                    <div class="buttons">
+                        <button type="submit" class="btn btn-save">
+                            <i class="fas fa-save"></i> Сохранить карточку
+                        </button>
+                        <button type="button" class="btn btn-new" id="new-card-btn">
+                            <i class="fas fa-plus"></i> Новая карточка
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="preview-container">
+                <h2><i class="fas fa-list-alt"></i> Предварительный просмотр</h2>
+                <div id="preview-content">
+                    <!-- Здесь будут отображаться карточки -->
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Система загрузки карточек в государственный каталог | Данные сохраняются локально в вашем браузере</p>
+            <p>© 2023 Министерство культуры РФ</p>
+        </footer>
+    </div>
+
+    <!-- Модальное окно для подписи -->
+    <div class="modal" id="signature-modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-signature"></i> Подпись карточки</h2>
+            <p>Пожалуйста, введите ваше имя для сохранения карточки:</p>
+            <div class="modal-input">
+                <input type="text" id="signature-input" placeholder="Ваше ФИО" maxlength="100">
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-save" id="confirm-save">
+                    <i class="fas fa-check"></i> Подписать и сохранить
+                </button>
+                <button type="button" class="btn btn-new" id="cancel-save">
+                    <i class="fas fa-times"></i> Отмена
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i> Карточка успешно сохранена!
+    </div>
+
+    <script>
+        // Элементы DOM
+        const cardForm = document.getElementById('card-form');
+        const previewContent = document.getElementById('preview-content');
+        const signatureModal = document.getElementById('signature-modal');
+        const signatureInput = document.getElementById('signature-input');
+        const confirmSaveBtn = document.getElementById('confirm-save');
+        const cancelSaveBtn = document.getElementById('cancel-save');
+        const newCardBtn = document.getElementById('new-card-btn');
+        const notification = document.getElementById('notification');
+        
+        // Статистика
+        const totalCardsElement = document.getElementById('total-cards');
+        const todayCardsElement = document.getElementById('today-cards');
+        const lastIdElement = document.getElementById('last-id');
+        
+        // Данные приложения
+        let cards = JSON.parse(localStorage.getItem('museumCards')) || [];
+        let currentCardData = null;
+        
+        // Инициализация
+        function init() {
+            updateStats();
+            renderCards();
+            
+            // Устанавливаем подсказку с сегодняшней датой
+            const today = new Date();
+            const formattedToday = `${String(today.getDate()).padStart(2, '0')}.${String(today.getMonth() + 1).padStart(2, '0')}.${today.getFullYear()}`;
+            document.getElementById('date').placeholder = `ДД.ММ.ГГГГ (например: ${formattedToday})`;
+        }
+        
+        // Обновление статистики
+        function updateStats() {
+            totalCardsElement.textContent = cards.length;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayCount = cards.filter(card => card.creationDate === today).length;
+            todayCardsElement.textContent = todayCount;
+            
+            if (cards.length > 0) {
+                lastIdElement.textContent = cards[cards.length - 1].kNumber;
+            } else {
+                lastIdElement.textContent = '-';
+            }
+        }
+        
+        // Проверка формата даты
+        function isValidDate(dateString) {
+            // Проверяем формат ДД.ММ.ГГГГ
+            const pattern = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+            if (!pattern.test(dateString)) {
+                return false;
+            }
+            
+            const parts = dateString.split('.');
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const year = parseInt(parts[2], 10);
+            
+            // Проверяем корректность даты
+            if (year < 1000 || year > 3000 || month === 0 || month > 12) {
+                return false;
+            }
+            
+            const monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            
+            // Проверка на високосный год
+            if (year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)) {
+                monthLength[1] = 29;
+            }
+            
+            return day > 0 && day <= monthLength[month - 1];
+        }
+        
+        // Преобразование даты из ДД.ММ.ГГГГ в YYYY-MM-DD
+        function formatDateForStorage(dateString) {
+            if (!isValidDate(dateString)) {
+                return null;
+            }
+            
+            const parts = dateString.split('.');
+            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+        
+        // Рендеринг карточек
+        function renderCards() {
+            if (cards.length === 0) {
+                previewContent.innerHTML = `
+                    <div class="empty-preview">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Нет сохраненных карточек</h3>
+                        <p>Заполните форму слева, чтобы создать первую карточку</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            previewContent.innerHTML = '';
+            
+            // Сортируем карточки по дате создания (новые сверху)
+            const sortedCards = [...cards].sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
+            
+            sortedCards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card-preview';
+                cardElement.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title">${card.name}</div>
+                        <div class="card-id">${card.kNumber}</div>
+                    </div>
+                    <div class="card-field">
+                        <div class="field-label">Описание</div>
+                        <div class="field-value">${card.description.substring(0, 100)}${card.description.length > 100 ? '...' : ''}</div>
+                    </div>
+                    <div class="card-field">
+                        <div class="field-label">Дата записи в КП</div>
+                        <div class="field-value">${card.date}</div>
+                    </div>
+                    <div class="card-field">
+                        <div class="field-label">Размеры</div>
+                        <div class="field-value">${card.dimensions}</div>
+                    </div>
+                    <div class="card-field">
+                        <div class="field-label">Автор сохранения</div>
+                        <div class="field-value">${card.author}</div>
+                    </div>
+                    <div class="card-field">
+                        <div class="field-label">Дата создания</div>
+                        <div class="field-value">${formatDate(card.creationDate)}</div>
+                    </div>
+                `;
+                previewContent.appendChild(cardElement);
+            });
+        }
+        
+        // Форматирование даты для отображения
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+        
+        // Показ уведомления
+        function showNotification(message) {
+            notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Обработка отправки формы
+        cardForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Получаем значение даты
+            const dateValue = document.getElementById('date').value.trim();
+            
+            // Проверяем формат даты
+            if (!isValidDate(dateValue)) {
+                alert('Пожалуйста, введите дату в формате ДД.ММ.ГГГГ (например: 15.10.2023)');
+                document.getElementById('date').focus();
+                return;
+            }
+            
+            // Собираем данные формы
+            currentCardData = {
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                kNumber: document.getElementById('kNumber').value,
+                date: dateValue, // Сохраняем в формате ДД.ММ.ГГГГ
+                dimensions: document.getElementById('dimensions').value,
+                creationDate: new Date().toISOString().split('T')[0]
+            };
+            
+            // Показываем модальное окно для подписи
+            signatureModal.style.display = 'flex';
+            signatureInput.focus();
+        });
+        
+        // Подтверждение сохранения с подписью
+        confirmSaveBtn.addEventListener('click', function() {
+            const signature = signatureInput.value.trim();
+            
+            if (!signature) {
+                alert('Пожалуйста, введите ваше имя для подписи карточки');
+                return;
+            }
+            
+            // Добавляем автора к данным карточки
+            currentCardData.author = signature;
+            currentCardData.id = Date.now(); // Уникальный ID
+            
+            // Сохраняем карточку
+            cards.push(currentCardData);
+            localStorage.setItem('museumCards', JSON.stringify(cards));
+            
+            // Обновляем интерфейс
+            updateStats();
+            renderCards();
+            
+            // Скрываем модальное окно
+            signatureModal.style.display = 'none';
+            signatureInput.value = '';
+            
+            // Очищаем форму
+            cardForm.reset();
+            
+            // Показываем уведомление
+            showNotification(`Карточка "${currentCardData.name}" успешно сохранена!`);
+            
+            // Сбрасываем текущие данные
+            currentCardData = null;
+        });
+        
+        // Отмена сохранения
+        cancelSaveBtn.addEventListener('click', function() {
+            signatureModal.style.display = 'none';
+            signatureInput.value = '';
+            currentCardData = null;
+        });
+        
+        // Кнопка "Новая карточка"
+        newCardBtn.addEventListener('click', function() {
+            cardForm.reset();
+            document.getElementById('name').focus();
+        });
+        
+        // Закрытие модального окна при клике вне его
+        window.addEventListener('click', function(e) {
+            if (e.target === signatureModal) {
+                signatureModal.style.display = 'none';
+                signatureInput.value = '';
+                currentCardData = null;
+            }
+        });
+        
+        // Автоматическое форматирование даты при вводе
+        document.getElementById('date').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '.' + value.substring(2);
+            }
+            if (value.length >= 5) {
+                value = value.substring(0, 5) + '.' + value.substring(5, 9);
+            }
+            
+            e.target.value = value;
+        });
+        
+        // Запуск приложения
+        init();
+        
+        // Добавляем анимацию кнопкам при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    button.style.transform = 'scale(1)';
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
