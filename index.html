@@ -23,6 +23,7 @@
             --card-bg: #1a1a24;
             --success-color: #00cc88;
             --warning-color: #ffaa00;
+            --search-bg: #1e1e2a;
         }
 
         body {
@@ -34,7 +35,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -74,18 +75,20 @@
             padding: 25px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
+            max-height: 850px;
+            overflow-y: auto;
         }
 
         .preview-container {
-            flex: 1;
-            min-width: 350px;
+            flex: 2;
+            min-width: 500px;
             background-color: var(--card-bg);
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
-            overflow-y: auto;
-            max-height: 800px;
+            display: flex;
+            flex-direction: column;
         }
 
         .form-group {
@@ -207,17 +210,20 @@
 
         .card-field {
             margin-bottom: 10px;
+            display: flex;
         }
 
         .field-label {
             font-weight: 600;
             color: #aaa;
             font-size: 0.9rem;
+            min-width: 180px;
         }
 
         .field-value {
             font-size: 1.1rem;
             color: var(--text-color);
+            flex: 1;
         }
 
         .empty-preview {
@@ -275,7 +281,7 @@
             background-color: var(--secondary-bg);
             border-radius: 10px;
             padding: 15px;
-            margin-top: 20px;
+            margin-bottom: 20px;
             border: 1px solid var(--border-color);
         }
 
@@ -331,7 +337,125 @@
             display: block;
         }
 
-        @media (max-width: 768px) {
+        .search-container {
+            margin-bottom: 20px;
+            background-color: var(--search-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.3);
+        }
+
+        .search-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-light);
+        }
+
+        .filter-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .cards-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #777;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-light);
+        }
+
+        .export-btn {
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-light);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .export-btn:hover {
+            background-color: rgba(138, 43, 226, 0.1);
+        }
+
+        .card-signature {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        @media (max-width: 1100px) {
             .main-content {
                 flex-direction: column;
             }
@@ -342,6 +466,17 @@
             
             .buttons {
                 flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-field {
+                flex-direction: column;
+            }
+            
+            .field-label {
+                min-width: 100%;
+                margin-bottom: 5px;
             }
         }
     </style>
@@ -365,6 +500,11 @@
             <div class="stat-item">
                 <div class="stat-value" id="last-id">-</div>
                 <div class="stat-label">Последний номер по КП</div>
+            </div>
+            <div class="stat-item">
+                <button class="export-btn" id="export-btn">
+                    <i class="fas fa-download"></i> Экспорт
+                </button>
             </div>
         </div>
 
@@ -410,8 +550,23 @@
             </div>
             
             <div class="preview-container">
-                <h2><i class="fas fa-list-alt"></i> Предварительный просмотр</h2>
-                <div id="preview-content">
+                <div class="search-container">
+                    <h2><i class="fas fa-search"></i> Поиск карточек</h2>
+                    <div class="search-box">
+                        <input type="text" id="search-input" class="search-input" placeholder="Поиск по названию, описанию или номеру КП...">
+                        <button class="btn btn-save" id="search-btn">
+                            <i class="fas fa-search"></i> Найти
+                        </button>
+                    </div>
+                    <div class="search-filters">
+                        <button class="filter-btn active" data-filter="all">Все</button>
+                        <button class="filter-btn" data-filter="today">Сегодня</button>
+                        <button class="filter-btn" data-filter="week">За неделю</button>
+                        <button class="filter-btn" data-filter="month">За месяц</button>
+                    </div>
+                </div>
+                
+                <div class="cards-list" id="preview-content">
                     <!-- Здесь будут отображаться карточки -->
                 </div>
             </div>
@@ -427,13 +582,13 @@
     <div class="modal" id="signature-modal">
         <div class="modal-content">
             <h2><i class="fas fa-signature"></i> Подпись карточки</h2>
-            <p>Пожалуйста, введите ваше имя для сохранения карточки:</p>
+            <p>Пожалуйста, введите номер карточки для сохранения (любое число для идентификации):</p>
             <div class="modal-input">
-                <input type="text" id="signature-input" placeholder="Ваше ФИО" maxlength="100">
+                <input type="text" id="signature-input" placeholder="Например: 001, 002 и т.д." maxlength="20">
             </div>
             <div class="modal-buttons">
                 <button type="button" class="btn btn-save" id="confirm-save">
-                    <i class="fas fa-check"></i> Подписать и сохранить
+                    <i class="fas fa-check"></i> Подписать номером и сохранить
                 </button>
                 <button type="button" class="btn btn-new" id="cancel-save">
                     <i class="fas fa-times"></i> Отмена
@@ -457,6 +612,10 @@
         const cancelSaveBtn = document.getElementById('cancel-save');
         const newCardBtn = document.getElementById('new-card-btn');
         const notification = document.getElementById('notification');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const exportBtn = document.getElementById('export-btn');
         
         // Статистика
         const totalCardsElement = document.getElementById('total-cards');
@@ -466,6 +625,8 @@
         // Данные приложения
         let cards = JSON.parse(localStorage.getItem('museumCards')) || [];
         let currentCardData = null;
+        let currentFilter = 'all';
+        let currentSearch = '';
         
         // Инициализация
         function init() {
@@ -476,6 +637,20 @@
             const today = new Date();
             const formattedToday = `${String(today.getDate()).padStart(2, '0')}.${String(today.getMonth() + 1).padStart(2, '0')}.${today.getFullYear()}`;
             document.getElementById('date').placeholder = `ДД.ММ.ГГГГ (например: ${formattedToday})`;
+            
+            // Автоматическое сохранение каждые 30 секунд
+            setInterval(autoSave, 30000);
+            
+            // Автосохранение при закрытии страницы
+            window.addEventListener('beforeunload', autoSave);
+        }
+        
+        // Автосохранение
+        function autoSave() {
+            if (cards.length > 0) {
+                localStorage.setItem('museumCards', JSON.stringify(cards));
+                console.log('Автосохранение выполнено');
+            }
         }
         
         // Обновление статистики
@@ -521,24 +696,60 @@
             return day > 0 && day <= monthLength[month - 1];
         }
         
-        // Преобразование даты из ДД.ММ.ГГГГ в YYYY-MM-DD
-        function formatDateForStorage(dateString) {
-            if (!isValidDate(dateString)) {
-                return null;
+        // Фильтрация карточек
+        function filterCards(cardsList) {
+            let filtered = [...cardsList];
+            
+            // Применяем текстовый поиск
+            if (currentSearch.trim() !== '') {
+                const searchTerm = currentSearch.toLowerCase();
+                filtered = filtered.filter(card => 
+                    card.name.toLowerCase().includes(searchTerm) ||
+                    card.description.toLowerCase().includes(searchTerm) ||
+                    card.kNumber.toLowerCase().includes(searchTerm) ||
+                    card.dimensions.toLowerCase().includes(searchTerm)
+                );
             }
             
-            const parts = dateString.split('.');
-            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            // Применяем фильтр по дате
+            const today = new Date();
+            const weekAgo = new Date(today);
+            weekAgo.setDate(today.getDate() - 7);
+            const monthAgo = new Date(today);
+            monthAgo.setDate(today.getDate() - 30);
+            
+            switch(currentFilter) {
+                case 'today':
+                    filtered = filtered.filter(card => card.creationDate === today.toISOString().split('T')[0]);
+                    break;
+                case 'week':
+                    filtered = filtered.filter(card => {
+                        const cardDate = new Date(card.creationDate);
+                        return cardDate >= weekAgo;
+                    });
+                    break;
+                case 'month':
+                    filtered = filtered.filter(card => {
+                        const cardDate = new Date(card.creationDate);
+                        return cardDate >= monthAgo;
+                    });
+                    break;
+                // 'all' - все карточки
+            }
+            
+            return filtered;
         }
         
         // Рендеринг карточек
         function renderCards() {
-            if (cards.length === 0) {
+            const filteredCards = filterCards(cards);
+            
+            if (filteredCards.length === 0) {
                 previewContent.innerHTML = `
-                    <div class="empty-preview">
-                        <i class="fas fa-inbox"></i>
-                        <h3>Нет сохраненных карточек</h3>
-                        <p>Заполните форму слева, чтобы создать первую карточку</p>
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>Карточки не найдены</h3>
+                        <p>${cards.length === 0 ? 'Создайте первую карточку' : 'Попробуйте изменить параметры поиска'}</p>
                     </div>
                 `;
                 return;
@@ -547,7 +758,7 @@
             previewContent.innerHTML = '';
             
             // Сортируем карточки по дате создания (новые сверху)
-            const sortedCards = [...cards].sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
+            const sortedCards = filteredCards.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
             
             sortedCards.forEach((card, index) => {
                 const cardElement = document.createElement('div');
@@ -558,37 +769,30 @@
                         <div class="card-id">${card.kNumber}</div>
                     </div>
                     <div class="card-field">
-                        <div class="field-label">Описание</div>
-                        <div class="field-value">${card.description.substring(0, 100)}${card.description.length > 100 ? '...' : ''}</div>
+                        <div class="field-label">Описание:</div>
+                        <div class="field-value">${card.description}</div>
                     </div>
                     <div class="card-field">
-                        <div class="field-label">Дата записи в КП</div>
+                        <div class="field-label">Дата записи в КП:</div>
                         <div class="field-value">${card.date}</div>
                     </div>
                     <div class="card-field">
-                        <div class="field-label">Размеры</div>
+                        <div class="field-label">Размеры:</div>
                         <div class="field-value">${card.dimensions}</div>
                     </div>
-                    <div class="card-field">
-                        <div class="field-label">Автор сохранения</div>
-                        <div class="field-value">${card.author}</div>
+                    <div class="card-signature">
+                        <i class="fas fa-hashtag"></i> Номер карточки: ${card.signature || 'не указан'}
                     </div>
-                    <div class="card-field">
-                        <div class="field-label">Дата создания</div>
-                        <div class="field-value">${formatDate(card.creationDate)}</div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="editCard(${card.id})">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </button>
+                        <button class="action-btn" onclick="deleteCard(${card.id})">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
                     </div>
                 `;
                 previewContent.appendChild(cardElement);
-            });
-        }
-        
-        // Форматирование даты для отображения
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
             });
         }
         
@@ -621,9 +825,10 @@
                 name: document.getElementById('name').value,
                 description: document.getElementById('description').value,
                 kNumber: document.getElementById('kNumber').value,
-                date: dateValue, // Сохраняем в формате ДД.ММ.ГГГГ
+                date: dateValue,
                 dimensions: document.getElementById('dimensions').value,
-                creationDate: new Date().toISOString().split('T')[0]
+                creationDate: new Date().toISOString().split('T')[0],
+                id: Date.now() // Уникальный ID
             };
             
             // Показываем модальное окно для подписи
@@ -636,13 +841,12 @@
             const signature = signatureInput.value.trim();
             
             if (!signature) {
-                alert('Пожалуйста, введите ваше имя для подписи карточки');
+                alert('Пожалуйста, введите номер карточки для сохранения');
                 return;
             }
             
-            // Добавляем автора к данным карточки
-            currentCardData.author = signature;
-            currentCardData.id = Date.now(); // Уникальный ID
+            // Добавляем подпись к данным карточки
+            currentCardData.signature = signature;
             
             // Сохраняем карточку
             cards.push(currentCardData);
@@ -660,7 +864,7 @@
             cardForm.reset();
             
             // Показываем уведомление
-            showNotification(`Карточка "${currentCardData.name}" успешно сохранена!`);
+            showNotification(`Карточка "${currentCardData.name}" успешно сохранена под номером ${signature}!`);
             
             // Сбрасываем текущие данные
             currentCardData = null;
@@ -678,6 +882,86 @@
             cardForm.reset();
             document.getElementById('name').focus();
         });
+        
+        // Поиск карточек
+        searchBtn.addEventListener('click', function() {
+            currentSearch = searchInput.value;
+            renderCards();
+        });
+        
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                currentSearch = searchInput.value;
+                renderCards();
+            }
+        });
+        
+        // Фильтры
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Убираем активный класс у всех кнопок
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Добавляем активный класс нажатой кнопке
+                this.classList.add('active');
+                // Устанавливаем текущий фильтр
+                currentFilter = this.getAttribute('data-filter');
+                renderCards();
+            });
+        });
+        
+        // Экспорт данных
+        exportBtn.addEventListener('click', function() {
+            if (cards.length === 0) {
+                alert('Нет данных для экспорта');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(cards, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `карточки_музей_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Данные экспортированы в JSON файл');
+        });
+        
+        // Функция редактирования карточки
+        window.editCard = function(id) {
+            const card = cards.find(c => c.id === id);
+            if (!card) return;
+            
+            // Заполняем форму данными карточки
+            document.getElementById('name').value = card.name;
+            document.getElementById('description').value = card.description;
+            document.getElementById('kNumber').value = card.kNumber;
+            document.getElementById('date').value = card.date;
+            document.getElementById('dimensions').value = card.dimensions;
+            
+            // Удаляем старую карточку
+            deleteCard(id, false);
+            
+            showNotification('Карточка загружена для редактирования');
+        };
+        
+        // Функция удаления карточки
+        window.deleteCard = function(id, confirm = true) {
+            if (confirm && !window.confirm('Вы уверены, что хотите удалить эту карточку?')) {
+                return;
+            }
+            
+            cards = cards.filter(c => c.id !== id);
+            localStorage.setItem('museumCards', JSON.stringify(cards));
+            updateStats();
+            renderCards();
+            
+            if (confirm) {
+                showNotification('Карточка удалена');
+            }
+        };
         
         // Закрытие модального окна при клике вне его
         window.addEventListener('click', function(e) {
